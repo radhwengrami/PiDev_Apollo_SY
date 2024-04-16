@@ -1,0 +1,78 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
+<div class="form-group row">
+    <label for="inputTitre" class="col-sm-3 col-form-label">Titre</label>
+    <div class="col-sm-9">
+        {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'id': 'inputTitre'}}) }}
+       <div class="errormessage">
+            {{ form_errors(form.titre) }}
+        </div>
+    </div>
+</div>
+<div class="form-group row">
+    <label for="inputImageAffiche" class="col-sm-3 col-form-label">Image de l'affiche</label>
+    <div class="col-sm-9">
+        {{ form_widget(form.image_affiche,  {'id': 'inputImageAffiche'}) }}
+    <div class="errormessage">
+        {{ form_errors(form.image_affiche) }}
+        </div>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="inputDescription" class="col-sm-3 col-form-label">Description</label>
+    <div class="col-sm-9">
+        {{ form_widget(form.description, {'id': 'inputDescription'}) }}
+        <div class="errormessage">
+        {{ form_errors(form.description) }}
+          </div>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="inputDateDebut" class="col-sm-3 col-form-label">Date de début</label>
+    <div class="col-sm-9">
+        {{ form_widget(form.date_debut, {'id': 'inputDateDebut'}) }}
+        <div class="errormessage">
+        {{ form_errors(form.date_debut) }}
+          </div>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="inputDateFin" class="col-sm-3 col-form-label">Date de fin</label>
+    <div class="col-sm-9">
+        {{ form_widget(form.date_fin, {'attr': {'class': 'form-control', 'id': 'inputDateFin'}}) }}
+        <div class="errormessage">
+        {{ form_errors(form.date_fin) }}
+          </div>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="inputTypeExpo" class="col-sm-3 col-form-label">Type d'exposition</label>
+    <div class="col-sm-9">
+        {{ form_widget(form.type_expo, {'attr': {'class': 'form-control', 'id': 'inputTypeExpo'}}) }}
+        <div class="errormessage">
+        {{ form_errors(form.type_expo) }}
+          </div>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="inputLocalisation" class="col-sm-3 col-form-label">Localisation</label>
+    <div class="col-sm-9">
+        {{ form_widget(form.localisation, {'attr': {'class': 'form-control', 'id': 'inputLocalisation'}}) }}
+        <div class="errormessage">
+        {{ form_errors(form.localisation) }}
+          </div>
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-sm-9 offset-sm-3">
+        <button type="submit" class="btn btn-primary mr-2">Save</button>
+        <button class="btn btn-dark">Cancel</button>
+    </div>
+</div>
+
+{{ form_end(form) }}

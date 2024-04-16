@@ -1,0 +1,19 @@
+{% extends 'base-back2.html.twig' %}
+
+{% block title %}Edit OeuvreArt{% endblock %}
+
+{% block body %}
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Ajouter Oeuvre</h4>
+    
+    {{ include('oeuvre/form_Oeuvre.html.twig', {'button_label': 'Update'}) }}
+    <button type="button" class="btn btn-primary btn-lg btn-block">
+    <i class="mdi mdi-account"></i> <a href="{{ path('mes_oeuvres_utilisateur', {'userId': app.user.id}) }}">Revenir à la liste</a></button>
+    
+    {{ include('oeuvre/supprimer_oeuvre.html.twig') }}
+    </div>
+    </div>
+    </div>
+{% endblock %}
