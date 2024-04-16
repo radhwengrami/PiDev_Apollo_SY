@@ -1,0 +1,15 @@
+{% extends 'base-back.html.twig' %}
+
+{% block title %}Info{% endblock %}
+
+{% block body %}
+    <h1>Info</h1>
+
+    {% if user %}
+        <p>Bienvenue, {{ app.user.email }} !</p>
+        <p>Vos rôles: {{ app.user.roles|join(', ') }}</p>
+        {# Ajoutez d'autres informations de l'utilisateur ici #}
+    {% else %}
+        <p>Connectez-vous pour voir votre tableau de bord.</p>
+    {% endif %}
+{% endblock %}
