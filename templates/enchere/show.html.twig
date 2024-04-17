@@ -1,0 +1,76 @@
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        article {
+            margin-bottom: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px;
+            border-radius: 5px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <article>
+            <h1>{{ enchere.getTypeOeuvre() }}</h1>
+            <img src="{{ vich_uploader_asset(enchere) }}" alt="{{ enchere.getImage() }}">
+            <p>{{ enchere.getMinMontant() }} DT</p>
+        </article>
+
+        
+<a href="{{ path('app_mise_create', {'enchere_id': enchere.id}) }}">Participer</a> |
+        <a href="{{ path('app_enchere') }}">Quitter</a>
+       
+
+    </div>
+{% endblock %}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Formulaire de Mise</title>
+    <style>
+        /* Style pour le conteneur principal */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style pour le formulaire */
+        .form-container {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+        /* Style pour les champs de formulaire */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        /* Style pour le bouton */
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style pour les champs en erreur */
+        .error {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Veuillez saisir votre Montant</h1>
+
+            {{ form_start(monFormulaire) }}
+            {{ form_errors(monFormulaire) }}
+            <div class="form-group {% if monFormulaire.max_montant.vars.errors|length > 0 %} error {% endif %}">
+                {{ form_label(monFormulaire.max_montant) }}
+                {{ form_widget(monFormulaire.max_montant) }}
+                {{ form_errors(monFormulaire.max_montant) }}
+            </div>
+            <input type="submit" value="Create Enchere" class="btn" formnovalidate>
+            {{ form_end(monFormulaire) }}
+        </div>
+    </div>
+</body>
+</html>

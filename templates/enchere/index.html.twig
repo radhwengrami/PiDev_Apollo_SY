@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Enchere du jour!{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .enchere-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Quatre éléments par ligne */
+            gap: 20px; /* Espacement entre les éléments */
+            justify-items: center; /* Centrer les éléments horizontalement */
+        }
+        .enchere-item {
+            width: 100%;
+            max-width: 200px; /* Largeur maximale pour chaque bloc d'image */
+            background-color: #f0f0f0; /* Couleur de fond pour chaque bloc */
+            padding: 15px; /* Espacement interne pour chaque bloc */
+            border-radius: 10px; /* Bord arrondi pour chaque bloc */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre pour chaque bloc */
+        }
+        .enchere-item img {
+            width: 100%;
+            height: 70%;
+        }
+        .enchere-count {
+            text-align: center; /* Centrer le texte horizontalement */
+            margin-bottom: 20px; /* Espacement sous le nombre d'encheres */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="enchere-count">
+        <h1>{{ enchere | length }} Encheres Disponible 🕛</h1>
+    </div>
+    <div class="enchere-container">
+        {% for enchereItem in enchere %}
+            <div class="enchere-item">
+                <img src="{{ vich_uploader_asset(enchereItem) }}" alt="{{ enchereItem.getImage() }}">
+                <h2><a href="{{ path('app_encheres_show', {id: enchereItem.id}) }}">{{ enchereItem.getImage() }}</a></h2>
+               <p>{{ enchereItem.getMinMontant() }} DT</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

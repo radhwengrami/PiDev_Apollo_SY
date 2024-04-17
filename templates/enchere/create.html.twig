@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Formulaire d'Enchère</title>
+    <style>
+       /* Style pour le conteneur principal */
+               body {
+                   font-family: Arial, sans-serif;
+                   background-color: #f4f4f4;
+                   margin: 0;
+                   padding: 0;
+                   display: flex;
+                   justify-content: center;
+                   align-items: center;
+                   height: 100vh;
+               }
+
+               .container {
+                   width: 400px;
+                   padding: 20px;
+                   background-color: #fff;
+                   border-radius: 10px;
+                   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+               }
+
+               /* Style pour le formulaire */
+               .form-container {
+                   padding: 20px;
+                   border-radius: 10px;
+                   background-color: #f9f9f9;
+               }
+
+               /* Style pour les champs de formulaire */
+               .form-group {
+                   margin-bottom: 20px;
+               }
+
+               .form-group label {
+                   display: block;
+                   margin-bottom: 5px;
+                   font-weight: bold;
+               }
+
+               .form-group input[type="text"],
+               .form-group input[type="number"],
+               .form-group input[type="file"],
+               .form-group input[type="date"] {
+                   width: 100%;
+                   padding: 10px;
+                   border: 1px solid #ccc;
+                   border-radius: 5px;
+                   box-sizing: border-box;
+               }
+
+               /* Style pour le bouton */
+               .btn {
+                   background-color: #007bff;
+                   color: #fff;
+                   border: none;
+                   padding: 10px 20px;
+                   border-radius: 5px;
+                   cursor: pointer;
+                   font-size: 16px;
+                   font-weight: bold;
+               }
+
+               .btn:hover {
+                   background-color: #0056b3;
+               }
+
+               /* Style pour la validation des champs */
+               .form-group.has-error input[type="text"],
+               .form-group.has-error input[type="number"],
+               .form-group.has-error input[type="file"],
+               .form-group.has-error input[type="date"] {
+                   border-color: red;
+               }
+
+               .form-group.has-error label {
+                   color: red;
+               }
+
+               .form-group.has-error .help-block {
+                   color: red;
+               }
+           </style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Creer Un Enchere</h1>
+
+            {{ form_start(monFormulaire) }}
+            {{ form_errors(monFormulaire) }}
+
+            <div class="form-group{% if monFormulaire.type_oeuvre.vars.valid == false %} has-error{% endif %}">
+                {{ form_label(monFormulaire.type_oeuvre) }}
+                {{ form_widget(monFormulaire.type_oeuvre) }}
+                {% if monFormulaire.type_oeuvre.vars.valid == false %}
+                    <span class="help-block">Ce champ ne peut pas être vide ou ne contient pas uniquement des lettres.</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group{% if monFormulaire.min_montant.vars.valid == false %} has-error{% endif %}">
+                {{ form_label(monFormulaire.min_montant) }}
+                {{ form_widget(monFormulaire.min_montant) }}
+                {% if monFormulaire.min_montant.vars.valid == false %}
+                    <span class="help-block">Ce champ ne peut pas être vide ou ne contient pas uniquement des chiffres.</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group{% if monFormulaire.date_debut.vars.valid == false %} has-error{% endif %}">
+                {{ form_label(monFormulaire.date_debut) }}
+                {{ form_widget(monFormulaire.date_debut) }}
+                {% if monFormulaire.date_debut.vars.valid == false %}
+                    <span class="help-block">La date de début doit être aujourd'hui ou plus tard.</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group{% if monFormulaire.date_fin.vars.valid == false %} has-error{% endif %}">
+                {{ form_label(monFormulaire.date_fin) }}
+                {{ form_widget(monFormulaire.date_fin) }}
+                {% if monFormulaire.date_fin.vars.valid == false %}
+                    {% if monFormulaire.date_fin.vars.errors|length > 0 %}
+                        {% for error in monFormulaire.date_fin.vars.errors %}
+                            <span class="help-block">{{ error.message }}</span>
+                        {% endfor %}
+                    {% elseif monFormulaire.date_fin.vars.value|default('') == '' %}
+                        <span class="help-block">Ce champ ne peut pas être vide.</span>
+                   {% if monFormulaire.date_fin.vars.value is not empty %}
+                       {% if monFormulaire.date_debut.vars.value is not empty %}
+                           {% set date_fin = monFormulaire.date_fin.vars.value|date('Y-m-d') %}
+                           {% set date_debut = monFormulaire.date_debut.vars.value|date('Y-m-d') %}
+                           {% if date_fin < date_debut %}
+                               <span class="help-block">La date de fin doit être postérieure à la date de début.</span>
+                           {% endif %}
+                       {% else %}
+                           <span class="help-block">La date de début est requise avant de spécifier la date de fin.</span>
+                       {% endif %}
+                   {% else %}
+                       <span class="help-block">La date de fin est requise.</span>
+                   {% endif %}
+
+ {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="form-group{% if monFormulaire.imageFile.vars.value is empty %}{% if monFormulaire.imageFile.vars.valid == false %} has-error{% endif %}{% endif %}">
+                {{ form_widget(monFormulaire.imageFile) }}
+                {% if monFormulaire.imageFile.vars.value == false %}
+                    <span class="help-block">          </span>
+                {% endif %}
+            </div>
+
+
+
+            <input type="submit" value="Creer " class="btn" formnovalidate>
+            <a href="{{path('app_encheres')}}" class="btn">Annuler</a>
+
+            {{ form_end(monFormulaire) }}
+        </div>
+    </div>
+</body>
+</html>

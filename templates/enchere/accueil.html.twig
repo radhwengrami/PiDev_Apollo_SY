@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Tooplate's Little Fashion</title>
+
+    <!-- CSS FILES -->
+    <link href="{{ asset('front-office/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('front-office/css/bootstrap-icons.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('front-office/css/slick.css') }}"/>
+    <link href="{{ asset('front-office/css/tooplate-little-fashion.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <section class="preloader">
+        <div class="spinner">
+            <span class="sk-inner-circle"></span>
+        </div>
+    </section>
+
+    <main>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <a class="navbar-brand" href="index.html">
+                    <strong><span>Apo</span>llo</strong>
+                </a>
+
+                <div class="d-lg-none">
+                    <a href="{{path('app_backk')}}" class="bi-person custom-icon me-3"></a>
+                    <a href="{{path('app_back')}}" class="bi-bag custom-icon"></a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href={{path('app_enchere')}}>Home</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">Story</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('app_enchere_accueil')}}">Enchere</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('app_encheres_create')}}">Oeuvre</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-none d-lg-block">
+                        <a href="{{path('app_backk')}}" class="bi-person custom-icon me-3"></a>
+                        <a href="{{path('app_back')}}" class="bi-bag custom-icon"></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+
+
+        {% block stylesheets %}
+        <style>
+            .enchere-container {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr); /* Quatre éléments par ligne */
+                gap: 20px; /* Espacement entre les éléments */
+                justify-items: center; /* Centrer les éléments horizontalement */
+            }
+             .enchere-item h4 {
+                            text-align: center; /* Centrer le texte */
+                            margin-top: 10px; /* Espacement au-dessus du titre */
+                        }
+            .enchere-item {
+                width: 100%;
+                max-width: 220px; /* Largeur maximale pour chaque bloc d'image */
+                background-color: #f0f0f0; /* Couleur de fond pour chaque bloc */
+                padding: 15px; /* Espacement interne pour chaque bloc */
+                border-radius: 10px; /* Bord arrondi pour chaque bloc */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre pour chaque bloc */
+            }
+            .enchere-item img {
+                width: 100%;
+                height: 70%;
+            }
+            .enchere-count {
+                text-align: center; /* Centrer le texte horizontalement */
+                margin-bottom: 20px; /* Espacement sous le nombre d'encheres */
+            }
+            h1, h2 {
+                font-weight: normal; /* Rendre le texte non gras */
+            }
+        </style>
+        {% endblock %}
+
+        {% block body %}
+        <div class="enchere-count">
+            <h1>{{ enchere | length }} Encheres Disponible 🕛</h1>
+        </div>
+        <div class="enchere-container">
+            {% for enchereItem in enchere %}
+            <div class="enchere-item">
+                <img src="{{ vich_uploader_asset(enchereItem) }}" alt="{{ enchereItem.getImage() }}">
+                <h4><a href="{{ path('app_encheres_show', {id: enchereItem.id}) }}">{{ enchereItem.getTypeOeuvre() }}</a></h4>
+                <p>{{ enchereItem.getMinMontant() }} DT</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endblock %}
+    </main>
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="{{ asset('front-office/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('front-office/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('front-office/js/Headroom.js') }}"></script>
+    <script src="{{ asset('front-office/js/jQuery.headroom.js') }}"></script>
+    <script src="{{ asset('front-office/js/slick.min.js') }}"></script>
+    <script src="{{ asset('front-office/js/custom.js') }}"></script>
+</body>
+</html>
