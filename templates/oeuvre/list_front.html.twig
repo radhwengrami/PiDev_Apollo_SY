@@ -1,0 +1,43 @@
+{% extends 'base_front.html.twig' %} 
+
+{% block body %}
+
+
+
+<section class="products section-padding">
+    <div class="container">
+<div class="row">
+                        
+                        <div class="col-12">
+                            <h2 class="mb-5">New Arrivals</h2>
+                        </div>
+                        {% for i in oeuvres %}
+                        <div class="col-lg-4 col-12 mb-3">
+                            <div class="product-thumb">
+                                <a href="#">
+                                    <img src="{{asset('assets_front/images/product/evan-mcdougall-qnh1odlqOmk-unsplash.jpeg')}}" class="img-fluid product-image" alt="">
+                                </a>
+
+                                <div class="product-top d-flex">
+                                    <span class="product-alert me-auto">New Arrival</span>
+
+                                    <a href="{{path('app_panier_new_front',{'id':i.id}) }}" class="bi-heart-fill product-icon"></a>
+                                </div>
+
+                                <div class="product-info d-flex">
+                                    <div>
+                                        <h5 class="product-title mb-0">
+                                            <a href="product-detail.html" class="product-title-link">{{i.titre}}</a>
+
+                                        </h5>
+
+                                        <p class="product-p">{{i.dimention}}</p>
+                                    </div>
+
+                                    <small class="product-price text-muted ms-auto">{{i.prix}}</small>
+                                </div>
+                            </div>
+                        </div>
+    {% endfor %}    
+                        
+{% endblock %}

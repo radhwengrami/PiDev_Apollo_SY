@@ -1,0 +1,47 @@
+{% extends 'base_front.html.twig' %}
+
+{% block title %}Commande index{% endblock %}
+
+{% block body %}
+    <h1>Mes Commandes</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date_commande</th>
+                <th>Oeuvres</th>
+                <th>Etat</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for commande in commandes %}
+        {% if commande.etat != "annulee_par_client" %}
+            <tr>
+                <td>{{ commande.id }}</td>
+                <td>{{ commande.dateCommande ? commande.dateCommande|date('Y-m-d') : '' }}</td>
+                
+                <td>
+                {% for oeuvre in commande.oeuvres %}
+                        {{ oeuvre.titre }}
+                    {% endfor %}
+                </td>
+                
+                <td>{{ commande.etat }}</td>
+                <td>
+                    <a href="{{ path('app_commande_delete_front', {'id': commande.id}) }}">annuler</a>
+                    
+                </td>
+            </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_commande_new') }}">Create new</a>
+{% endblock %}
