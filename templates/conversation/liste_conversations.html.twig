@@ -1,0 +1,108 @@
+{% extends "base.html.twig" %}
+{% block title %} Liste des conversations{% endblock  %}
+    {% block stylesheets %}
+    {{parent()}}
+    <!-- Ajout de Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Ajout de Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Style personnalisé pour le tableau */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        h1 {
+            font-family: Arial, sans-serif; /* Changer la police d'écriture */
+            text-align: center; /* Centrer le texte */
+            margin-bottom: 20px; /* Espacement en bas du titre */
+        }
+    </style>
+    {% endblock  %}
+   {% block body %}
+   <div class="container">
+    <h1>Liste des conversations et leurs participants</h1>
+    <!-- Formulaire de recherche -->
+    <div class="row mb-3">
+        <div class="col-md-4 offset-md-8">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Rechercher par sujet" name="search_query" id="search-input">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-secondary">Rechercher</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Tableau des conversations avec Bootstrap -->
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Sujet</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Date de création</th>
+                <th>Type de conversation</th>
+                <th>Visibilité</th>
+                <th>Participants</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for conversation in conversations %}
+                <tr>
+                    <td>{{ conversation.sujet }}</td>
+                    <td>{{ conversation.titre }}</td>
+                    <td>{{ conversation.description }}</td>
+                    <td>{{ conversation.createdAt|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ conversation.typeConversation }}</td>
+                    <td>{{ conversation.visibilite }}</td>
+                    <td>
+                        <ul>
+                            {% for participant in conversation.participants %}
+                                <li>{{ participant.prenom }} {{ participant.nom }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="d-inline-block mr-2">
+                            <a href="{{ path('edit_conversation', {'id': conversation.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                        </div>
+                        <div class="d-inline-block">
+                            <a href="{{ path('delete_conversation', {'id': conversation.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette conversation ?')"><i class="fas fa-trash-alt"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Ajout de Bootstrap JavaScript (facultatif si vous n'utilisez pas les composants JavaScript de Bootstrap) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Script de recherche dynamique -->
+<script>
+    $(document).ready(function() {
+        $('#search-input').on('keyup', function() {
+            var query = $(this).val().toLowerCase().trim(); // Récupérer la valeur de recherche en minuscules
+            $('tbody tr').each(function() {
+                var subject = $(this).find('td:first').text().toLowerCase().trim(); // Texte du sujet de la ligne actuelle en minuscules
+                if (subject.indexOf(query) === -1) { // Vérifier si le sujet de la ligne ne contient pas la valeur de recherche
+                    $(this).hide(); // Masquer la ligne si la recherche ne correspond pas
+                } else {
+                    $(this).show(); // Afficher la ligne si la recherche correspond
+                }
+            });
+        });
+    });
+</script>
+
+   {% endblock %}
+

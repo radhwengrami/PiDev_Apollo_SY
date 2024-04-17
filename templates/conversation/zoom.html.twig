@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+{% block body %}
+<body>
+
+    <button id="join-btn">Join Stream</button>
+
+    <div id="stream-wrapper">
+        <div id="video-streams"></div>
+
+        <div id="stream-controls">
+            <button id="leave-btn">Leave Stream</button>
+            <button id="mic-btn">Mic On</button>
+            <button id="camera-btn">Camera on</button>
+        </div>
+    </div>
+       {# Include CSS file #}
+       <link rel="stylesheet" href="{{ asset('css/zoom.css') }}">
+
+       {# Include JS file #}
+       <script src="{{ asset('assets/js/AgoraRTC_N-4.7.3.js') }}"></script>
+       <script src="{{ asset('js/zoom.js') }}"></script>
+</body>
+{% endblock %}

@@ -2,18 +2,151 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Apollo Gallery{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
+        <!-- CSS FILES -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+        <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('assets/css/bootstrap-icons.css')}}" rel="stylesheet">
+        <link rel="stylesheet" href="{{asset('assets/css/slick.css')}}"/>
+        <link href=" {{asset('assets/css/tooplate-little-fashion.css')}}" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/conversation.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+       
         {% endblock %}
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
+            <script src="{{asset('assets/js/jquery.min.js')}}" ></script>
+            <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}" ></script>
+            <script src="{{asset('assets/js/Headroom.js')}}" ></script>
+            <script src="{{asset('assets/js/jQuery.headroom.js')}}" ></script>
+            <script src="{{asset('assets/js/slick.min.js')}}" ></script>
+            <script src="{{asset('assets/js/custom.js')}}" ></script>
+            <script src="{{asset('assets/js/Emoji.js')}}" ></script>
+          <!--  <script src="{{asset('assets/js/Emoji.min.js')}}" ></script> -->
+          <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.5.1/dist/emoji-button.min.js"></script>
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
-    </body>
+        {% block header %}
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+    
+                <a class="navbar-brand" href="index.html">
+                    <strong><span>Apollo</span>Gallery art</strong>
+                </a>
+    
+                <div class="d-lg-none">
+                    <a href="sign-in.html" class="bi-person custom-icon me-3"></a>
+    
+                    <a href="product-detail.html" class="bi-bag custom-icon"></a>
+                </div>
+    
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html">Home</a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">Story</a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a class="nav-link" href="products.html">Products</a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a class="nav-link" href="faq.html">FAQs</a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact</a>
+                        </li>
+                        <!-- Ajout du bouton Chat -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                               Conversation
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="choix-conversation">Choix Conversation</a></li>
+                               <!-- <li><a class="dropdown-item" href="{{ path('group_conversations') }}">Conversation de Groupe</a></li> -->
+                                <li><a class="dropdown-item" href="{{ path('getConversations') }}">Liste des Conversations</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                   
+                
+                    
+                    <div class="d-none d-lg-block">
+                        <a href="sign-in.html" class="bi-person custom-icon me-3"></a>
+    
+                        <a href="product-detail.html" class="bi-bag custom-icon"></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        {% endblock %}
+  {% block body %}{% endblock  %}
+        {% block footer %}
+<footer class="site-footer">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-3 col-10 me-auto mb-4">
+                <h4 class="text-white mb-3"><a href="index.html">Little</a> Fashion</h4>
+                <p class="copyright-text text-muted mt-lg-5 mb-4 mb-lg-0">Copyright © 2022 <strong>Little Fashion</strong></p>
+                <br>
+                <p class="copyright-text">Designed by <a href="https://www.tooplate.com/" target="_blank">Tooplate</a></p>
+            </div>
+
+            <div class="col-lg-5 col-8">
+                <h5 class="text-white mb-3">Sitemap</h5>
+
+                <ul class="footer-menu d-flex flex-wrap">
+                    <li class="footer-menu-item"><a href="about.html" class="footer-menu-link">Story</a></li>
+
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Products</a></li>
+
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Privacy policy</a></li>
+
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">FAQs</a></li>
+
+                    <li class="footer-menu-item"><a href="#" class="footer-menu-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-4">
+                <h5 class="text-white mb-3">Social</h5>
+
+                <ul class="social-icon">
+
+                    <li><a href="#" class="social-icon-link bi-youtube"></a></li>
+
+                    <li><a href="#" class="social-icon-link bi-whatsapp"></a></li>
+
+                    <li><a href="#" class="social-icon-link bi-instagram"></a></li>
+
+                    <li><a href="#" class="social-icon-link bi-skype"></a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</footer>
+        {% endblock footer %}
+</body>
 </html>

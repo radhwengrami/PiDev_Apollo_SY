@@ -1,0 +1,363 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<!-- Container principal -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- Container de la liste des utilisateurs -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Liste des utilisateurs</h3>
+                </div>
+                <div class="card-body ">
+                    <input type="text" class="form-control mb-3" id="search-input" placeholder="Rechercher un utilisateur">
+                    <ul class="list-group">
+                        {% for user in users %}
+                        <li class="list-group-item">
+                            <a href="{{ path('conversation_with_user', {'userId': user.id}) }}">{{ user.nom }} {{ user.prenom }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Container de la conversation -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ conversation.sujet }}</h2>
+                </div>
+                <div class="card-body">
+                    <p>{{ conversation.description }}</p>
+                </div>
+                <div class="card-body message-list" id="message-list"   style="max-height: 400px; overflow-y: auto;">
+                    {% for message in messages|reverse %}
+                    <div class="message {% if message.utilisateur == app.user %}sent{% endif %}">
+                        <span class="user-name">{{ message.utilisateur.nom }}</span>
+                        <div class="message-content {% if message.utilisateur == app.user %}sent-by-me{% endif %}">
+                            {{ message.contenu }}
+                        </div>
+                        <div class="message-date">{{ message.createdAt|date('Y-m-d H:i:s') }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</div>
+<form method="POST" class="add-message-form mt-2" id="message-form" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="input-group">
+                    <textarea name="message_content" class="form-control" style="width: 60%;" rows="2" placeholder="Votre message"></textarea>
+                    <div class="input-group-append">
+                        <label for="image_upload" class="input-group-text upload-icon">
+                            <input type="file" id="image_upload" name="image_upload" accept="image/*" style="display:none;">
+                            <i class="fas fa-image"></i> <!-- Icône d'importation d'image -->
+                        </label>
+                        <button type="button" id="emoji-picker-button" class="btn btn-outline-secondary"><i class="far fa-smile"></i></button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Envoyer</button> <!-- Bouton Envoyer avec une icône -->
+                       
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Inclure Firebase Storage -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+<script >
+ 
+    
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDK4qMKQI6r_ccCliKLROS-GwPi0gxlCTE",
+            authDomain: "symfonychatproject.firebaseapp.com",
+            projectId: "symfonychatproject",
+            storageBucket: "symfonychatproject.appspot.com",
+            messagingSenderId: "733766792191",
+            appId: "1:733766792191:web:1ee1ff64f409cbeebdadca",
+            measurementId: "G-K06QPJ9069"
+          };
+        
+          // Initialize Firebase
+          const app = firebase.initializeApp(firebaseConfig);
+          var firebaseref=firebase.database().ref('emails');
+          // Référence à la base de données
+          const database = firebase.database();
+      
+      
+      
+          const socket = new WebSocket('ws://localhost:3001');
+          socket.addEventListener('open', function (event) {
+              console.log('Connected to WebSocket server');
+              console.log(event.data);
+          });
+              // Maintenant que la connexion est ouverte, écouter les événements de réception de messages
+         
+
+                 
+                
+                // Fonction pour extraire le nom de fichier de l'URL
+function getImageFileName(url) {
+    // Diviser l'URL en segments en fonction du caractère '/'
+    const segments = url.split('/');
+    // Sélectionner le dernier segment, qui devrait contenir le nom de fichier avec l'extension
+    const fileNameWithExtension = segments[segments.length - 1];
+    // Remplacer les caractères spéciaux dans le nom de fichier pour assurer une meilleure lisibilité
+    const decodedFileName = decodeURIComponent(fileNameWithExtension);
+    // Retourner le nom de fichier sans l'extension
+    return decodedFileName.split('?')[0];
+}
+// Fonction pour vérifier si le message contient une URL d'image
+function isImageUrl(content) {
+    // Vérifier si le contenu du message contient une extension d'image
+    return content.match(/\.(jpeg|jpg|gif|png)$/) !== null;
+}
+
+
+       socket.addEventListener('message', function (event) { 
+    const message = JSON.parse(event.data);
+    console.log('Received message from server:', message);
+
+    // Récupérer le nom de l'utilisateur connecté
+    $.ajax({
+        url: "{{ path('get_user_name', {'userId': app.user.id}) }}",
+        type: 'GET',
+        success: function(response) {
+            const userName = response.nom;
+            
+            // Mettre à jour l'interface utilisateur avec le nouveau message reçu
+            const messageList = document.querySelector('.message-list');
+            const messageItem = document.createElement('div');
+            messageItem.classList.add('message');
+            if (message.data.mine) {
+                messageItem.classList.add('sent');
+            }
+            messageItem.innerHTML = `
+                <div class="user-name">${userName}</div>
+                <div class="message-content">${message.data.contenu}</div>
+                <div class="message-date">${message.data.createdAt}</div>
+            `;
+            messageList.appendChild(messageItem);
+        },
+        error: function(error) {
+            console.error("Erreur lors de la récupération du nom de l'utilisateur :", error);
+        }
+    });
+});
+
+      
+          // Écouter les événements WebSocket
+          socket.addEventListener('error', function (event) {
+              console.error('WebSocket error:', event);
+          });
+      
+          // Fonction pour télécharger une image sur Firebase Storage et retourner son URL
+          function uploadImage(imageFile) {
+              return new Promise((resolve, reject) => {
+                  // Créer une référence de stockage dans Firebase
+                  const storageRef = firebase.storage().ref();
+                  
+                  // Créer une référence de fichier dans Firebase Storage
+                  const imageRef = storageRef.child('images/' + imageFile.name);
+                  
+                  // Envoyer le fichier image à Firebase Storage
+                  imageRef.put(imageFile)
+                      .then(snapshot => {
+                          // Récupérer l'URL de l'image téléchargée
+                          imageRef.getDownloadURL()
+                              .then(imageURL => {
+                                  // Résoudre la promesse avec l'URL de l'image
+                                  resolve(imageURL);
+                              })
+                              .catch(error => {
+                                  // Rejeter la promesse en cas d'erreur lors de la récupération de l'URL de l'image
+                                  reject(error);
+                              });
+                      })
+                      .catch(error => {
+                          // Rejeter la promesse en cas d'erreur lors de l'envoi du fichier image à Firebase Storage
+                          reject(error);
+                      });
+              });
+          }
+        
+
+      
+      // Écouter l'événement de soumission du formulaire
+      document.getElementById('message-form').addEventListener('submit', function(event) {
+          event.preventDefault(); // Empêcher le rechargement de la page
+      
+          // Récupérer le contenu du message
+          const messageContent = document.querySelector('textarea[name="message_content"]').value;
+          // Vérifier s'il y a un fichier image sélectionné
+          const imageFile = document.getElementById('image_upload').files[0];
+          console.log(imageFile)
+          if (imageFile) {
+              // Si un fichier image est sélectionné, l'envoyer en tant qu'image
+              uploadImage(imageFile)
+                  .then(imageURL => {
+                      // Une fois que l'image est téléchargée avec succès, envoyer le message avec l'URL de l'image
+                      sendMessage(imageURL);
+                    
+                  })
+                  .catch(error => {
+                      console.error('Erreur lors de l\'envoi de l\'image :', error);
+                  });
+          } else {
+              // Si aucun fichier image n'est sélectionné, envoyer le message texte
+              sendMessage(messageContent);
+          }
+      });
+      
+    // Fonction pour envoyer un message avec le contenu spécifié
+    function sendMessage(content) {
+        let messageData;
+            if (typeof content === 'string') {
+            // Le contenu est une URL d'image
+            messageData = {
+                contenu: content, // Le contenu est l'URL de l'image
+                createdAt: new Date().toISOString(), // Date de création actuelle
+                utilisateur_id: {{ app.user.id }},
+                conversation_id: {{ conversation.id }},
+                mine: true // C'est votre propre message
+           
+            };
+            // Envoyer le message au serveur via WebSocket
+            const message = {
+                type: 'new_message',
+                data: messageData
+            };
+    
+            // Stocker les données du message dans Firebase
+            firebaseref.push().set(messageData)
+                .then(function() {
+                    console.log("Message stocké avec succès dans Firebase !");
+                })
+                .catch(function(error) {
+                    console.error("Erreur lors du stockage du message dans Firebase :", error);
+                });
+    
+            socket.send(JSON.stringify(message));
+    
+            // Effacer le champ de saisie du message après l'envoi
+            document.querySelector('textarea[name="message_content"]').value = '';
+        
+        }
+        else{
+        const messageContent = document.querySelector('textarea[name="message_content"]').value;
+        messageData = {
+            contenu: messageContent, // Le contenu est le texte du message
+            createdAt: new Date().toISOString(), // Date de création actuelle
+            utilisateur_id: {{ app.user.id }},
+            conversation_id: {{ conversation.id }},
+            mine: true // C'est votre propre message
+        };
+
+        // Envoyer le message au serveur via WebSocket
+        const message = {
+            type: 'new_message',
+            data: messageData
+        };
+
+        // Stocker les données du message dans Firebase
+        firebaseref.push().set(messageData)
+            .then(function() {
+                console.log("Message stocké avec succès dans Firebase !");
+            })
+            .catch(function(error) {
+                console.error("Erreur lors du stockage du message dans Firebase :", error);
+            });
+
+        socket.send(JSON.stringify(message));
+
+        // Effacer le champ de saisie du message après l'envoi
+        document.querySelector('textarea[name="message_content"]').value = '';
+        }   
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Écouter l'événement de saisie dans le champ de recherche
+        document.getElementById('search-input').addEventListener('input', function () {
+            const query = this.value.toLowerCase(); // Convertir la valeur en minuscules
+    
+            // Parcourir la liste des utilisateurs
+            document.querySelectorAll('.list-group li').forEach(function (user) {
+                const userName = user.textContent.toLowerCase(); // Convertir le nom d'utilisateur en minuscules
+    
+                // Afficher ou masquer l'utilisateur en fonction de la correspondance avec la requête de recherche
+                if (userName.includes(query)) {
+                    user.style.display = 'block';
+                } else {
+                    user.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+
+
+
+
+
+
+
+      // Fonction pour gérer le clic long sur un message
+      function handleLongPress(messageItem) {
+          let pressTimer;
+      
+          // Ajouter un événement pour détecter le début du clic long
+          messageItem.addEventListener('mousedown', function(event) {
+              // Définir un délai avant d'exécuter l'action de suppression
+              pressTimer = window.setTimeout(function() {
+                  // Afficher l'option de suppression
+                  messageItem.classList.add('deletable');
+              }, 1000); // Modifier la durée du clic long selon vos besoins
+          });
+      
+          // Ajouter un événement pour détecter la fin du clic long
+          messageItem.addEventListener('mouseup', function(event) {
+              // Annuler le délai si le clic est relâché avant la fin du délai
+              clearTimeout(pressTimer);
+          });
+      
+          // Ajouter un événement pour détecter le clic sur l'option de suppression
+          messageItem.addEventListener('click', function(event) {
+              // Vérifier si l'option de suppression est visible
+              if (messageItem.classList.contains('deletable')) {
+                  // Supprimer le message de la liste
+                  messageItem.remove();
+                  // Cacher l'option de suppression
+                  messageItem.classList.remove('deletable');
+              }
+          });
+      }
+      
+      // Appeler la fonction pour chaque message de la liste
+      const messageItems = document.querySelectorAll('.message');
+      messageItems.forEach(function(messageItem) {
+          handleLongPress(messageItem);
+      });
+      
+
+
+
+
+</script>
+{% endblock  %}
+ 

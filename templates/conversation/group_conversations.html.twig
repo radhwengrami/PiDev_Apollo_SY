@@ -1,0 +1,38 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<style>
+    .conversation-card:hover {
+        background-color: orange;
+    }
+    .btn-custom {
+        color: black; /* Couleur du texte */
+    }
+   
+        h1 {
+            font-family: Arial, sans-serif; /* Changer la police d'écriture */
+            text-align: center; /* Centrer le texte */
+            margin-bottom: 20px; /* Espacement en bas du titre */
+        }
+   
+</style>
+<body>
+    <div class="container">
+        <h1> Mes Conversations de Groupe</h1>
+        <div class="row">
+            {% for conversation in groupConversations %}
+                <div class="col-md-4">
+                    <div class="card conversation-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ conversation.sujet }}</h5>
+                            <p class="card-text">{{ conversation.description }}</p>
+                            <a href="{{ path('conversation_with_group', {'conversationId': conversation.id}) }}" class="btn btn-primary btn-custom">Acceder a la conversation</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="{{ path('create_groupe_conversation') }}" class="btn btn-primary btn-custom mt-3">Créer une conversation de groupe</a>
+    </div>
+</body>
+{% endblock %}

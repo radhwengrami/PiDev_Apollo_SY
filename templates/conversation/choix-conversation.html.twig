@@ -1,0 +1,49 @@
+{% extends "base.html.twig" %}
+   {% block body %}
+   <style>
+    /* Style pour les boutons avec couleur orange */
+.btn-orange {
+    background-color: orange;
+    color: black; /* Couleur du texte */
+}
+
+/* Style pour les boutons avec couleur noire au survol */
+.btn-orange:hover {
+    background-color: black;
+    color: orange; /* Couleur du texte */
+}
+h1 {
+    font-family: Arial, sans-serif; /* Changer la police d'écriture */
+    text-align: center; /* Centrer le texte */
+    margin-bottom: 20px; /* Espacement en bas du titre */
+}
+   </style>
+   <div class="container">
+    <h1>Choisissez le type de conversation </h1>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card bg-orange mb-3">
+                <a href="{{ path('liste_utilisateur')}}" class="btn btn-primary btn-block btn-orange">Conversation en duo</a>
+            </div>
+        </div>
+       <div class="col-md-4">
+            <div class="card bg-orange mb-3">
+                <a href="{{ path('group_conversations') }}" class="btn btn-primary btn-block btn-orange">Conversation de groupe</a>
+            </div>
+        </div>
+        <!-- <div class="col-md-4">
+            <div class="card bg-orange mb-3">
+                <a href="{{ path('getConversations') }}" class="btn btn-primary btn-block btn-orange">Liste des conversations</a>
+            </div>
+        </div>-->
+        <div class="col-md-4">
+            <div class="card bg-orange mb-3">
+                <a href="zoom" class="btn btn-primary btn-block btn-orange">Appel vidéo</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock  %}

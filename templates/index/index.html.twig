@@ -1,0 +1,149 @@
+/*       socket.addEventListener('message', function (event) { 
+    const message = JSON.parse(event.data);
+    console.log('Received message from server:', message);
+
+    // Récupérer le nom de l'utilisateur connecté
+    $.ajax({
+        url: "{{ path('get_user_name', {'userId': app.user.id}) }}",
+        type: 'GET',
+        success: function(response) {
+            const userName = response.nom;
+            
+            // Mettre à jour l'interface utilisateur avec le nouveau message reçu
+            const messageList = document.querySelector('.message-list');
+            const messageItem = document.createElement('div');
+            messageItem.classList.add('message');
+            if (message.data.mine) {
+                messageItem.classList.add('sent');
+            }
+            messageItem.innerHTML = `
+                <div class="user-name">${userName}</div>
+                <div class="message-content">${message.data.contenu}</div>
+                <div class="message-date">${message.data.createdAt}</div>
+            `;
+            messageList.appendChild(messageItem);
+        },
+        error: function(error) {
+            console.error("Erreur lors de la récupération du nom de l'utilisateur :", error);
+        }
+    });
+});
+*/
+
+
+
+/*document.getElementById('message-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Empêcher le rechargement de la page
+            
+    // Récupérer le contenu du message
+    const messageContent = document.querySelector('textarea[name="message_content"]').value;
+    // Créer un nouvel objet message avec les données à stocker dans Firebase
+    const messageData = {
+        contenu: messageContent,
+        createdAt: new Date().toISOString(), // Date de création actuelle
+        utilisateur_id: {{ app.user.id }},
+        conversation_id: {{ conversation.id }},
+        mine: true // C'est votre propre message
+    };
+    
+    
+    
+    // Envoyer le message au serveur via WebSocket
+    const message = {
+        type: 'new_message',
+        data: messageData,
+        data: {
+            contenu: messageContent,
+            createdAt: new Date().toISOString(), // Date de création actuelle
+            utilisateur_id: {{ app.user.id }},
+            conversation_id: {{ conversation.id }}, // ID de la conversation actuelle
+            mine: true, // C'est votre propre message
+        }
+    };
+    
+    // Stocker les données du message dans Firebase
+        firebaseref.push().set(messageData)
+            .then(function() {
+                console.log("Message stocké avec succès dans Firebase !");
+            })
+            .catch(function(error) {
+                console.error("Erreur lors du stockage du message dans Firebase :", error);
+            });
+    
+    // Envoyer le message au serveur
+    socket.send(JSON.stringify(message));  
+    
+    
+    // Effacer le champ de saisie du message après l'envoi
+    document.querySelector('textarea[name="message_content"]').value = '';
+    });*/
+    
+
+
+
+
+    // Vérifier si le contenu est une URL d'image 
+    /*    if (typeof content === 'string') {
+            // Le contenu est une URL d'image
+            messageData = {
+                contenu: content, // Le contenu est l'URL de l'image
+                createdAt: new Date().toISOString(), // Date de création actuelle
+                utilisateur_id: {{ app.user.id }},
+                conversation_id: {{ conversation.id }},
+                mine: true // C'est votre propre message
+           
+            };
+            // Envoyer le message au serveur via WebSocket
+            const message = {
+                type: 'new_message',
+                data: messageData
+            };
+    
+            // Stocker les données du message dans Firebase
+            firebaseref.push().set(messageData)
+                .then(function() {
+                    console.log("Message stocké avec succès dans Firebase !");
+                })
+                .catch(function(error) {
+                    console.error("Erreur lors du stockage du message dans Firebase :", error);
+                });
+    
+            socket.send(JSON.stringify(message));
+    
+            // Effacer le champ de saisie du message après l'envoi
+            document.querySelector('textarea[name="message_content"]').value = '';
+        
+        }
+        */
+        
+            const messageContent = document.querySelector('textarea[name="message_content"]').value;
+            messageData = {
+                contenu: messageContent, // Le contenu est le texte du message
+                createdAt: new Date().toISOString(), // Date de création actuelle
+                utilisateur_id: {{ app.user.id }},
+                conversation_id: {{ conversation.id }},
+                mine: true // C'est votre propre message
+            };
+    
+            // Envoyer le message au serveur via WebSocket
+            const message = {
+                type: 'new_message',
+                data: messageData
+            };
+    
+            // Stocker les données du message dans Firebase
+            firebaseref.push().set(messageData)
+                .then(function() {
+                    console.log("Message stocké avec succès dans Firebase !");
+                })
+                .catch(function(error) {
+                    console.error("Erreur lors du stockage du message dans Firebase :", error);
+                });
+    
+            socket.send(JSON.stringify(message));
+    
+            // Effacer le champ de saisie du message après l'envoi
+            document.querySelector('textarea[name="message_content"]').value = '';
+        
+    }
+    

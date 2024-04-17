@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %} 
+
+{% block title %}Ajouter une Conversation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- Ajout de Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .rounded-label {
+            border-radius: 20px;
+        } 
+        .error-message {
+            color: red;
+            font-size: 1rem;
+        }
+        .card-title {
+            font-family: Arial, sans-serif; /* Changer la police d'écriture */
+            text-align: center; /* Centrer le texte */
+            margin-bottom: 20px; /* Espacement en bas du titre */
+        }
+        .form-control {
+            border-radius: 10px; /* Bordures arrondies */
+            font-size: 0.9rem; /* Réduire la taille de la police */
+        }
+        .card-body {
+            margin: auto; /* Centrer horizontalement */
+            max-width: 500px; /* Largeur maximale du card-body */
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <h1 class="card-title">Créer conversation groupe</h1>
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                        {{ form_errors(form) }}
+
+                        <div class="form-group">
+                            <label for="inputSujet" class="rounded-label">Sujet</label>
+                            {{ form_widget(form.Sujet, {'attr': {'class': 'form-control', 'id': 'inputSujet'}}) }}
+                            {% if form_errors(form.Sujet) %}
+                                <span class="error-message">{{ form_errors(form.Sujet) }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputTitre" class="rounded-label">Titre</label>
+                            {{ form_widget(form.Titre, {'attr': {'class': 'form-control', 'id': 'inputTitre'}}) }}
+                            {% if form_errors(form.Titre) %}
+                                <span class="error-message">{{ form_errors(form.Titre) }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputDescription" class="rounded-label">Description</label>
+                            {{ form_widget(form.Description, {'attr': {'class': 'form-control', 'id': 'inputDescription'}}) }}
+                            {% if form_errors(form.Description) %}
+                                <span class="error-message">{{ form_errors(form.Description) }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputVisibilite" class="rounded-label">Visibilité</label>
+                            {{ form_widget(form.Visibilite, {'attr': {'class': 'form-control', 'id': 'inputVisibilite'}}) }}
+                            {% if form_errors(form.Visibilite) %}
+                                <span class="error-message">{{ form_errors(form.Visibilite) }}</span>
+                            {% endif %}
+                        </div>
+
+                    {{ form_end(form) }}
+
+                    {# Display flash messages if any #}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger mt-3">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+    <!-- Ajout de Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

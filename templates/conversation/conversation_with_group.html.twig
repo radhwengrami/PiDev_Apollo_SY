@@ -1,0 +1,222 @@
+{% extends "base.html.twig" %}
+{% block body %}
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Container de la liste des utilisateurs -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Liste des Participants</h3>
+                </div>
+                <div class="card-body ">
+                    <input type="text" class="form-control mb-3" id="search-input" placeholder="Rechercher un utilisateur">
+                    <ul class="list-group">
+                        {% for participant in participants %}
+                        <li  class="list-group-item">
+                            <p>{{ participant.utilisateur.nom }} {{ participant.utilisateur.prenom }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Container de la conversation -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ conversation.titre }}</h2>
+                </div>
+                <div class="card-body">
+                    <p>{{ conversation.description }}</p>
+                </div>
+                <div class="card-body message-list" id="message-list" style="max-height: 400px; overflow-y: auto;">
+                    {% for message in messages|reverse %}
+                    <div class="message {% if message.utilisateur == app.user %}sent{% else %}received{% endif %}">
+                        <span class="user-name">{{ message.utilisateur.nom }}</span>
+                        <div class="message-content {% if message.utilisateur == app.user %}sent-by-me{% endif %}">
+                            {{ message.contenu }}
+                        </div>
+                        <div class="message-date">{{ message.createdAt|date('Y-m-d H:i:s') }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" class="add-message-form mt-2" id="message-form">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="input-group">
+                    <textarea name="message_content" class="form-control" style="width: 80%;" rows="2" placeholder="Votre message"></textarea>
+                    <div class="input-group-append">
+                        <label for="image_upload" class="input-group-text upload-icon">
+                            <input type="file" id="image_upload" name="image_upload" accept="image/*" style="display:none;">
+                            <i class="fas fa-image"></i> <!-- Icône d'importation d'image -->
+                        </label>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Envoyer</button> <!-- Bouton Envoyer avec une icône -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+    .message {
+        margin-bottom: 10px;
+    }
+
+    .user-name {
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    .message-content {
+        display: inline-block;
+        max-width: 70%;
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .sent {
+        text-align: right;
+    }
+
+    .received {
+        text-align: left;
+    }
+
+    .sent .message-content {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .received .message-content {
+        background-color: #f0f0f0;
+        color: #000;
+    }
+
+    .message-date {
+        font-size: 12px;
+        margin-top: 5px;
+        color: #777;
+    }
+
+    .sent .message-date {
+        text-align: right;
+    }
+
+    .received .message-date {
+        text-align: left;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const socket = new WebSocket('ws://localhost:3001');
+        
+        // Écouter les événements WebSocket
+        socket.addEventListener('open', function (event) {
+            console.log('Connected to WebSocket server');
+        });
+
+        socket.addEventListener('message', function (event) {
+            const message = JSON.parse(event.data);
+            console.log('Received message from server:', message);
+            // Récupérer le nom de l'utilisateur connecté
+            $.ajax({
+                url: "{{ path('get_user_name', {'userId': app.user.id}) }}",
+                type: 'GET',
+                success: function(response) {
+                    const userName = response.nom;
+                    
+                    // Mettre à jour l'interface utilisateur avec le nouveau message reçu
+                    const messageList = document.querySelector('.message-list');
+                    const messageItem = document.createElement('div');
+                    messageItem.classList.add('message');
+                    if (message.data.mine) {
+                        messageItem.classList.add('sent');
+                    }
+                    messageItem.innerHTML = `
+                        <div class="user-name">${userName}</div>
+                        <div class="message-content">${message.data.contenu}</div>
+                        <div class="message-date">${message.data.createdAt}</div>
+                    `;
+                    messageList.appendChild(messageItem);
+                },
+                error: function(error) {
+                    console.error("Erreur lors de la récupération du nom de l'utilisateur :", error);
+                }
+            });
+            // Mettre à jour l'interface utilisateur avec le nouveau message reçu
+            // Par exemple, insérez-le dans la liste des messages existante
+       /*     const messageList = document.getElementById('message-list');
+            const messageItem = document.createElement('div');
+            messageItem.classList.add('message');
+            if (message.data.mine) {
+                messageItem.classList.add('sent');
+            }
+            messageItem.innerHTML = `
+                <div class="message-content">${message.data.contenu}</div>
+                <div class="message-date">${message.data.createdAt}</div>
+            `;
+            messageList.appendChild(messageItem);*/
+        });
+
+        // Écouter l'événement de soumission du formulaire
+document.getElementById('message-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Empêcher le rechargement de la page
+            
+    // Récupérer le contenu du message
+    const messageContent = document.querySelector('textarea[name="message_content"]').value;
+
+    // Envoyer le message au serveur via WebSocket
+    const message = {
+        type: 'new_message',
+        data: {
+            contenu: messageContent,
+            createdAt: new Date().toISOString(), // Date de création actuelle
+            mine: true, // C'est votre propre message
+            conversation_id: {{ conversation.id }}, // ID de la conversation actuelle
+            utilisateur_id: {{ app.user.id }}
+        }
+    };
+    socket.send(JSON.stringify(message));
+
+    // Effacer le champ de saisie du message après l'envoi
+    document.querySelector('textarea[name="message_content"]').value = '';
+});
+
+// Écouter les événements WebSocket
+/*socket.addEventListener('message', function (event) {
+    const message = JSON.parse(event.data);
+    console.log('Received message from server:', message);
+            
+    // Mettre à jour l'interface utilisateur avec le nouveau message reçu
+    // Par exemple, insérez-le dans la liste des messages existante
+    const messageList = document.querySelector('.message-list');
+    const messageItem = document.createElement('div');
+    messageItem.classList.add('message');
+    if (message.data.mine) {
+        messageItem.classList.add('sent');
+    }
+    messageItem.innerHTML = `
+        <span class="user-name">${message.data.utilisateur.nom}</span>
+        <div class="message-content">${message.data.contenu}</div>
+        <div class="message-date">${message.data.createdAt}</div>
+    `;
+    messageList.appendChild(messageItem);
+
+    // Faire défiler la liste des messages vers le bas pour afficher le dernier message ajouté
+    messageList.scrollTop = messageList.scrollHeight;
+});*/
+    </script>
+
+{% endblock  %}
+
+
+

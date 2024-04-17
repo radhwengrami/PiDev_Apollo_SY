@@ -1,0 +1,73 @@
+
+{%  extends "base.html.twig" %}
+   
+{% block body %}
+
+<body>
+    <form action="{{ path('add_participants_to_conversation', { 'conversationId': conversationId }) }}" method="post" class="mb-3">
+        <div class="container">
+            <h1>Liste des utilisateurs</h1>
+            <div class="row">
+                <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Recherche</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Rechercher un ami" name="search_query" id="search-input">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-outline-secondary">Rechercher</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <ul class="list-group" id="user-list">
+                        {% for utilisateur in utilisateurs %}
+                            <li class="list-group-item">
+                                <input type="checkbox" id="utilisateur_{{ utilisateur.id }}" name="participants[]" value="{{ utilisateur.id }}">
+                                <label for="utilisateur_{{ utilisateur.id }}"> {{ utilisateur.nom }} {{ utilisateur.prenom }}</label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4"></div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Ajouter des participants</button>
+                </div>
+            </div>
+
+            {% for flashError in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    {{ flashError }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </form>
+
+    <!-- Ajout de Bootstrap JavaScript (facultatif si vous n'utilisez pas les composants JavaScript de Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Script de recherche dynamique -->
+    <script>
+        $(document).ready(function() {
+            $('#search-input').on('keyup', function() {
+                var query = $(this).val().toLowerCase();
+                $('#user-list li').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(query) > -1)
+                });
+            });
+        });
+
+        // Cette partie du script JavaScript est déplacée dans la section JavaScript de la page où elle est nécessaire.
+    </script>
+</body>
+{% endblock  %}
+

@@ -1,0 +1,50 @@
+{% extends "base.html.twig" %}
+  
+{% block body %}
+
+<body>
+    <div class="container">
+        <h1>Liste des utilisateurs</h1>
+        <!-- Ajout du champ de recherche -->
+        <input type="text" id="search-input" class="form-control mb-3" placeholder="Rechercher un utilisateur">
+
+        <ul class="user-list">
+            {% for user in users %}
+                <li>
+                    <a href="{{ path('conversation_with_user', {'userId': user.id}) }}" class="user-link">
+                        <div class="user-avatar">
+                            <img src="{{ user.avatar }}" alt="{{ user.nom }}">
+                        </div>
+                        <div class="user-details">
+                            <h2>{{ user.nom }} {{ user.prenom }}</h2>
+                       
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Ajout de Bootstrap JavaScript (facultatif si vous n'utilisez pas les composants JavaScript de Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Script de recherche dynamique -->
+    <script>
+        $(document).ready(function() {
+            $('#search-input').on('keyup', function() {
+                var query = $(this).val().toLowerCase();
+                $('.user-link').each(function() {
+                    var userText = $(this).text().toLowerCase();
+                    if (userText.indexOf(query) === -1) {
+                        $(this).closest('li').hide();
+                    } else {
+                        $(this).closest('li').show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+{% endblock %}
