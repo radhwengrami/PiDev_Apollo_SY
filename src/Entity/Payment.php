@@ -39,12 +39,13 @@ class Payment
         return $this->idCommande;
     }
 
-    public function setIdCommande(commande $idCommande): static
+    public function setIdCommande(Commande $idCommande): static
     {
         $this->idCommande = $idCommande;
 
         return $this;
     }
+
 
     public function getEtat(): ?string
     {
