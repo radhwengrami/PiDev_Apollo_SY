@@ -127,4 +127,6 @@ class CommandeController extends AbstractController
 
         return $this->redirectToRoute('app_commande_index_front', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }

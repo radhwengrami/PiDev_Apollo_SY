@@ -15,7 +15,7 @@ class Payment
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?commande $idCommande = null;
+    private ?Commande $idCommande = null;
 
     #[ORM\Column(length: 255)]
     private ?string $etat = null;
