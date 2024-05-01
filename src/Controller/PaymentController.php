@@ -78,6 +78,7 @@ class PaymentController extends AbstractController
 
         return $this->redirectToRoute('app_payment_index', [], Response::HTTP_SEE_OTHER);
     }
+    
 }
 
 
