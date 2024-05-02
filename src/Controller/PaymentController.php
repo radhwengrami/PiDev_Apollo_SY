@@ -78,7 +78,15 @@ class PaymentController extends AbstractController
 
         return $this->redirectToRoute('app_payment_index', [], Response::HTTP_SEE_OTHER);
     }
-    
+
+
+    #[Route('/front', name: 'app_commande_index_front', methods: ['GET'])]
+    public function index_front(PaymentRepository $paymentRepository): Response
+    {
+        return $this->render('commande/show_front.html.twig', [
+            'commandes' => $commandeRepository->findAll(),
+        ]);
+    }
 }
 
 
